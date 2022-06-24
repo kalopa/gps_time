@@ -8,9 +8,9 @@ from the GPS.
 This particular message includes not just the time but also the date.
 A sample message might be:
 
-*$GPRMC,211321.000,A,5309.7743,N,01204.5576,W,0.17,78.41,200813,,,A*4E*
+*$GPRMC,211321.000,A,5309.7743,N,01204.5576,W,0.17,78.41,200813,,,A\*4E*
 
 The second field has the time in the form **HHMMSS.NNN** where N
 is the time in milliseconds.
-The tenth field has the date in the form YYMMDD in a not particularly
-Y2K-friendly format.
+The tenth field has the date in the form **YYMMDD** in a not
+particularly Y2K-friendly format.
