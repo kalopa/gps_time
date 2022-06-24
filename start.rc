@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# FreeBSD start script for gps_time. Install in /etc/rc.d or
+# /usr/local/etc/rc.d
+#
+
+# PROVIDE: gps_time
+# REQUIRE: swap
+# BEFORE: FILESYSTEMS
+# KEYWORD: gps_time
+
+. /etc/rc.subr
+
+name="gps_time"
+rcvar="gps_time_enable"
+
+load_rc_config $name
+
+command="/app/bin/${name}"
+command_args="${gps_time_flags}"
+
+run_rc_command "$1"
