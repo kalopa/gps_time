@@ -14,3 +14,29 @@ The second field has the time in the form **HHMMSS.NNN** where N
 is the time in milliseconds.
 The tenth field has the date in the form **YYMMDD** in a not
 particularly Y2K-friendly format.
+
+# Compiling and Installing
+
+The application doesn’t require any third-party libraries
+apart from libc.
+You’ll need a C compiler such as **gcc** or **clang**, **make**,
+and **libc**.
+Compiling should just be a matter of typing `make`.
+If you get compiler errors or warnings, raise a bug or get in touch.
+
+You can install the binary wherever you see fit, but */usr/local/bin*
+is a reasonable option.
+
+# Usage
+
+The program takes three optional arguments:
+
+* -s BAUD (sets the baud rate)
+* -l DEVICE (sets the serial device)
+* -v (prints verbose debugging info)
+
+A good example might be:
+
+    $ gps_time -s 9600 -l /dev/ttyu1 -v
+
+  
