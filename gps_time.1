@@ -1,0 +1,57 @@
+.TH gps_time "1" "June 2022"
+.SH NAME
+gps_time \- set the system time using GPS data
+.SH SYNOPSIS
+.B gps_time
+[
+.B \-s
+.I speed
+]
+[
+.B \-l
+.I device
+]
+[
+.B \-v
+]
+.SH DESCRIPTION
+gps_time is a simple application to read GPS NMEA sentences from
+a serial (or USB) device and extract date/time information to
+set the system time.
+It will read data from the device indefinitely until it finds a
+$GPRMC message which it will use to extract date and time
+information.
+.SH COMMAND LINE OPTIONS
+.TP
+.BI "\-s " baud-rate
+Specify the prototype file to generate.
+The default is
+.I 9600
+baud.
+.TP
+.BI "\-l " device
+Specify the serial device connected to the GPS.
+The default is
+.I /dev/ttyu0
+.TP
+.B \-v
+Be more verbose in output and show what is happening during each
+stage of operation.
+.SH EXAMPLES
+To silently set the time from a GPS attached to ttyU1:
+.PP
+.B
+	gps_time -s 9600 -l /dev/ttyU1
+.PP
+.SH BUGS
+Ideally the application would give up after some number of seconds,
+if the GPS data has not been successfully received.
+.SH AUTHOR
+.nf
+Dermot Tynan
+E-mail: dtynan@kalopa.com
+Website:  http://github.com/kalopa/gps_time/
+.fi
+.SH LICENSING
+gps_time is distributed under the BSD 3-Clause License
+in the hope that it will be useful.
