@@ -1,10 +1,11 @@
 # GPS Time
 
-Set the system time by reading from a GPS device connected via serial/USB.
+Set the system time by reading from a GPS device connected via
+serial/USB.
 
-This code opens a serial device at a specified baud rate,
-then trawls through the data received looking for a $GPRMC message
-from the GPS.
+This code opens a serial device at a specified baud rate, then
+trawls through the data received looking for a $GPRMC message from
+the GPS.
 This particular message includes not just the time but also the date.
 A sample message might be:
 
@@ -17,8 +18,8 @@ particularly Y2K-friendly format.
 
 # Compiling and Installing
 
-The application doesn’t require any third-party libraries
-apart from libc.
+The application doesn’t require any third-party libraries apart
+from libc.
 You’ll need a C compiler such as **gcc** or **clang**, **make**,
 and **libc**.
 Compiling should just be a matter of typing `make`.
