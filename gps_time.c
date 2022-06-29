@@ -92,8 +92,8 @@ void	usage();
 int
 main(int argc, char *argv[])
 {
-	int i, fd, speed = 9600;
-	char *cp, *device = "/dev/ttyu0";
+	int i, fd, baud = 9600;
+	char *device = "/dev/ttyu0";
 	struct termios tios;
 	FILE *iofp;
 
@@ -104,7 +104,7 @@ main(int argc, char *argv[])
 	while ((i = getopt(argc, argv, "s:l:v")) != EOF) {
 		switch (i) {
 		case 's':
-			speed = atoi(optarg);
+			baud = atoi(optarg);
 			break;
 
 		case 'l':
@@ -121,7 +121,7 @@ main(int argc, char *argv[])
 		}
 	}
 	if (verbose)
-		printf("GPS device: %s, speed: %d.\n", device, speed);
+		printf("GPS device: %s, speed: %d.\n", device, baud);
 	if ((fd = open(device, O_RDWR|O_NOCTTY|O_NDELAY)) < 0) {
 		fprintf(stderr, "gps_time: ");
 		perror(device);
