@@ -30,14 +30,20 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
+PREFIX?=/usr/local
 CFLAGS=	-Wall -O #-march=i386
 
-all:	gps_time
+APP=	gps_time
 
-install: gps_time
+all:	$(APP)
+
+install: $(APP)
+        install -C -m 555 $(APP) $(PREFIX)/bin
+	install -C -m 444 $(APP).1 $(PREFIX)/man/man1
+	gzip $(PREFIX)/man/man1/$(APP).1
 
 clean:
-	rm -f gps_time gps_time.o
+	rm -f $(APP) $(APP).o
 
-gps_time: gps_time.o
-	$(CC) -o gps_time gps_time.o
+$(APP):	$(APP).o
+	$(CC) -o $(APP) $(APP).o
