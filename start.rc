@@ -7,16 +7,19 @@
 # PROVIDE: gps_time
 # REQUIRE: swap
 # BEFORE: FILESYSTEMS
-# KEYWORD: gps_time
+# KEYWORD: nojail
 
 . /etc/rc.subr
 
 name="gps_time"
+desc="Set system clock based on GPS data"
 rcvar="gps_time_enable"
+command="/usr/local/sbin/gps_time"
+start_cmd="gps_time_start"
+stop_cmd=":"
 
-load_rc_config $name
-
-command="/app/bin/${name}"
-command_args="${gps_time_flags}"
-
-run_rc_command "$1"
+gps_time_start()
+{
+	echo -n 'Setting time from GPS: '
+	timeout 10 ${command} ${gps_time_flags}
+}

@@ -38,7 +38,7 @@ APP=	gps_time
 all:	$(APP)
 
 install: $(APP)
-        install -C -m 555 $(APP) $(PREFIX)/bin
+	install -C -m 555 $(APP) $(PREFIX)/bin
 	install -C -m 444 $(APP).1 $(PREFIX)/man/man1
 	gzip $(PREFIX)/man/man1/$(APP).1
 
