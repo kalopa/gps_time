@@ -130,6 +130,8 @@ main(int argc, char *argv[])
 	/*
 	 * Get and set the tty parameters.
 	 */
+	if (verbose)
+		printf("Setting serial I/O parameters.\n");
 	if (tcgetattr(fd, &tios) < 0) {
 		perror("gps_time: tcgetattr");
 		exit(1);
@@ -138,7 +140,7 @@ main(int argc, char *argv[])
 		if (speeds[i].value == baud)
 			break;
 	if (speeds[i].value == 0) {
-		fprintf(stderr, "gps_time: invalid baud rate");
+		fprintf(stderr, "gps_time: invalid baud rate: %d\n", baud);
 		exit(1);
 	}
 	cfsetispeed(&tios, speeds[i].code);
@@ -156,6 +158,8 @@ main(int argc, char *argv[])
 	 * Convert the fd into a FILE pointer - let someone else
 	 * do the buffering...
 	 */
+	if (verbose)
+		printf("Opening file descriptor as a file.\n");
 	if ((iofp = fdopen(fd, "r")) == NULL) {
 		perror("gps_time: fdopen");
 		exit(1);
@@ -165,6 +169,8 @@ main(int argc, char *argv[])
 	 */
 	while ((i = fgetc(iofp)) != EOF)
 		process(i);
+	if (verbose)
+		printf("Program terminated normally.\n");
 	exit(0);
 }
 
