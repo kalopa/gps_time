@@ -45,6 +45,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#define BUFFER_SIZE		512
+
 #define ST_WAITNL		0
 #define ST_WAITDL		1
 #define ST_CAPTURE		2
@@ -78,7 +80,8 @@ struct	speed	{
 };
 
 int	verbose;
-char	input[512];
+char	rdata[BUFFER_SIZE];
+char	input[BUFFER_SIZE];
 
 void	process(int);
 void	gps_line();
@@ -93,9 +96,8 @@ int
 main(int argc, char *argv[])
 {
 	int i, fd, baud = 9600;
-	char *device = "/dev/ttyu0";
+	char *cp, *device = "/dev/ttyu0";
 	struct termios tios;
-	FILE *iofp;
 
 	/*
 	 * Do the command-line arguments.
@@ -122,7 +124,7 @@ main(int argc, char *argv[])
 	}
 	if (verbose)
 		printf("GPS device: %s, speed: %d.\n", device, baud);
-	if ((fd = open(device, O_RDWR|O_NOCTTY|O_NDELAY)) < 0) {
+	if ((fd = open(device, O_RDONLY|O_NOCTTY)) < 0) {
 		fprintf(stderr, "gps_time: ");
 		perror(device);
 		exit(1);
@@ -143,13 +145,15 @@ main(int argc, char *argv[])
 		fprintf(stderr, "gps_time: invalid baud rate: %d\n", baud);
 		exit(1);
 	}
+	tios.c_iflag &= ~(IGNBRK | BRKINT | ICRNL | INLCR | PARMRK | INPCK | ISTRIP | IXON);
+	tios.c_oflag = 0;
+	tios.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN | ISIG);
+	tios.c_cflag &= ~(CSIZE|PARENB);
+	tios.c_cflag |= CS8;
+	tios.c_cc[VMIN] = 1;
+	tios.c_cc[VTIME] = 0;
 	cfsetispeed(&tios, speeds[i].code);
 	cfsetospeed(&tios, speeds[i].code);
-	tios.c_cflag &= ~(CSIZE|PARENB|CSTOPB);
-	tios.c_cflag |= (CLOCAL|CREAD|CS8);
-	tios.c_lflag = tios.c_iflag = tios.c_oflag = 0;
-	tios.c_cc[VMIN] = 1;
-	tios.c_cc[VTIME] = 100;
 	if (tcsetattr(fd, TCSANOW, &tios) < 0) {
 		perror("gps_time: tcsetattr");
 		exit(1);
@@ -160,15 +164,13 @@ main(int argc, char *argv[])
 	 */
 	if (verbose)
 		printf("Opening file descriptor as a file.\n");
-	if ((iofp = fdopen(fd, "r")) == NULL) {
-		perror("gps_time: fdopen");
-		exit(1);
-	}
 	/*
 	 * Read each character from the serial device, and process it.
 	 */
-	while ((i = fgetc(iofp)) != EOF)
-		process(i);
+	while ((i = read(fd, cp = rdata, BUFFER_SIZE)) > 0) {
+		while (i-- > 0)
+			process(*cp++);
+	}
 	if (verbose)
 		printf("Program terminated normally.\n");
 	exit(0);
@@ -180,11 +182,9 @@ main(int argc, char *argv[])
 void
 process(int ch)
 {
-	static int inpos;
+	static int inpos = 0;
 	static int state = ST_WAITNL;
 
-	if (verbose)
-		printf("Process: %c (%x)\n", (ch < ' ' || ch > 0x7e) ? '.' : ch, ch);
 	if (ch == '\n' || ch == '\r') {
 		/*
 		 * Saw a CR/NL. Process a line, if we have one.
@@ -202,6 +202,7 @@ process(int ch)
 	 * force us into waiting for a new CR/LF.
 	 */
 	if (state == ST_WAITDL) {
+		inpos = 0;
 		if (ch == '$')
 			state = ST_CAPTURE;
 		else
@@ -356,6 +357,6 @@ getvalue(char *strp, int ndigits)
 void
 usage()
 {
-	fprintf(stderr, "Usage: gps_time [-s 9600][-l /dev/ttyU0][-v]\n");
+	fprintf(stderr, "Usage: gps_time [-s 9600][-l /dev/ttyu0][-v]\n");
 	exit(2);
 }
