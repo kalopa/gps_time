@@ -183,6 +183,8 @@ process(int ch)
 	static int inpos;
 	static int state = ST_WAITNL;
 
+	if (verbose)
+		printf("Process: %c (%x)\n", (ch < ' ' || ch > 0x7e) ? '.' : ch, ch);
 	if (ch == '\n' || ch == '\r') {
 		/*
 		 * Saw a CR/NL. Process a line, if we have one.
