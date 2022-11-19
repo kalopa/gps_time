@@ -234,6 +234,7 @@ gps_line()
 	char *cp, *args[20];
 	struct timeval tval;
 	struct tm tm;
+	time_t now;
 
 	if (verbose)
 		printf("GPS: [%s]\n", input);
@@ -305,6 +306,8 @@ gps_line()
 	 * Set the system time.
 	 */
 	if (settimeofday(&tval, NULL) == 0) {
+		time(&now);
+		printf("%s", ctime(&now));
 		if (verbose)
 			printf("Time set successfully. Operation complete.\n");
 		exit(0);
