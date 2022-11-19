@@ -148,8 +148,8 @@ main(int argc, char *argv[])
 	tios.c_cflag &= ~(CSIZE|PARENB|CSTOPB);
 	tios.c_cflag |= (CLOCAL|CREAD|CS8);
 	tios.c_lflag = tios.c_iflag = tios.c_oflag = 0;
-	tios.c_cc[VMIN] = 0;
-	tios.c_cc[VTIME] = 10;
+	tios.c_cc[VMIN] = 1;
+	tios.c_cc[VTIME] = 100;
 	if (tcsetattr(fd, TCSANOW, &tios) < 0) {
 		perror("gps_time: tcsetattr");
 		exit(1);
